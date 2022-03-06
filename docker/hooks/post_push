@@ -25,7 +25,7 @@ main() {
         else
             ### get values for badges from the image metadata (labels)
             created=$( get_label "${DOCKER_REPO}:${DOCKER_TAG}" "org.opencontainers.image.created" )
-            version_sticker=$( get_label "${DOCKER_REPO}:${DOCKER_TAG}" "any.accetto.version-sticker" )
+            version_sticker=$( get_label "${DOCKER_REPO}:${DOCKER_TAG}" "any.${_owner}.version-sticker" )
             version_sticker_verbose=$( cat "${_build_context}/${_scrap_version_sticker_verbose_current}" )
 
             ### trigger the GitHub Actions workflow to push the readme file into the deployment repository
@@ -47,7 +47,7 @@ main() {
 
             ### get values for badges from the image metadata (labels)
             created=$( get_label "${DOCKER_REPO}:${DOCKER_TAG}" "org.opencontainers.image.created" )
-            version_sticker=$( get_label "${DOCKER_REPO}:${DOCKER_TAG}" "any.accetto.version-sticker" )
+            version_sticker=$( get_label "${DOCKER_REPO}:${DOCKER_TAG}" "any.${_owner}.version-sticker" )
             version_sticker_verbose=$( cat "${_build_context}/${_scrap_version_sticker_verbose_current}" )
 
             ### update badge endpoints in the builder repository gist

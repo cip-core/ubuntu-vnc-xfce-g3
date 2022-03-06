@@ -1,0 +1,86 @@
+# This is a basic workflow to help you get started with Actions
+
+name: autobuild
+
+# Controls when the workflow will run
+on:
+  # Triggers the workflow on push or pull request events but only for the cip branch
+  push:
+    branches: [ cip ]
+
+  # Allows you to run this workflow manually from the Actions tab
+  workflow_dispatch:
+
+env:
+  # - Mandatory
+  DOCKER_REGISTRY: quay.io
+  DOCKER_ORG: cip-core-platform
+  DOCKER_IMG: ubuntu-vnc-xfce-g3
+  DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+  DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+  # This variable should be set to 1 to ensure, that the BuildKit is used for
+  # building.
+  DOCKER_BUILDKIT: 1
+  # This is the ID of the Github Gist, which belongs to the builder repository.
+  # It stores metadata used by building the images.
+  GIST_ID: ${{ secrets.GIST_ID }}
+  # This is the ID of the GitHub Gist, which belongs to the deployment repositories.
+  # It contains metadata for the published images, e.g. JSON endpoints for the badges.
+  DEPLOY_GIST_ID: ${{ secrets.DEPLOY_GIST_ID }}
+  # The name of the GitHub repository, which contains the GitHub Actions workflow,
+  # which publishes the README files.
+  GIST_TOKEN: ${{ secrets.GIST_TOKEN }}
+  POST_PUSH_WORKFLOW_TOKEN: ${{ secrets.POST_PUSH_WORKFLOW_TOKEN }}
+  # - Optional
+  # If set to 1, then the image will be built and pushed into its deployment repository
+  # even if its verbose version sticker value has not changed since its last release.
+  #FORCE_BUILDING: (0|1)
+  # If set to 1, then the README file will be re-published even if the image has not
+  # been re-built and pushed into its deployment repository.
+  #FORCE_README_PUBLISHING: (0|1)
+  # If set to 1, then the image will not be built and pushed into its deployment
+  # repository even if its verbose version sticker value has changed since its last release.
+  #PROHIBIT_BUILDING: (0|1)
+  # If set to 1, then the post_push hook script will not trigger the GitHub Actions
+  # workflow dockerhub-post-push.yml, which publishes the readme file to Docker Hub.
+  # This can be useful by testing on Docker Hub or by building from non-default branches.
+  #PROHIBIT_README_PUBLISHING: (0|1)
+
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v1
+      - name: Cache Docker layers
+        uses: actions/cache@v2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-buildx-${{ github.sha }}
+          restore-keys: |
+            ${{ runner.os }}-buildx-
+      - name: Login to DockerHub
+        uses: docker/login-action@v1 
+        with:
+          registry: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_ORG }}
+          username: ${{ secrets.QUAY_USER }}
+          password: ${{ secrets.QUAY_TOKEN }}
+      - name: Run buid command
+        run: ./build_all_images.sh
+        env:
+          DOCKER_REPO: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMG }}
+          DOCKER_REGISTRY: ${{ env.DOCKER_REGISTRY }}
+          DOCKERHUB_USERNAME: ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_PASSWORD: ${{ secrets.DOCKERHUB_PASSWORD }}
+      - name: Extract metadata (tags, labels) for Docker
+        id: meta
+        uses: docker/metadata-action@v3
+        with:
+          images: ${{ env.DOCKER_REGISTRY }}/${{ env.DOCKER_ORG }}/${{ env.DOCKER_IMG }}
+      #- name: Move cache
+      #  run: |
+      #    rm -rf /tmp/.buildx-cache
+      #    mv /tmp/.buildx-cache-new /tmp/.buildx-cache

@@ -71,6 +71,12 @@ main() {
 
                     version=$("${_current_dir}/version_of.sh" websockify)
                     if [ -n "${version}" ] ; then echo "websockify ${version}" ; fi
+
+                    version=$("${_current_dir}/version_of.sh" winehq)
+                    if [ -n "${version}" ] ; then echo "winehq ${version}" ; fi
+
+                    version=$("${_current_dir}/version_of.sh" winetricks)
+                    if [ -n "${version}" ] ; then echo "winetricks ${version}" ; fi
                     ;;
             esac
             shift

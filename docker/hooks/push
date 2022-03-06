@@ -42,7 +42,7 @@ main() {
         if [ -n "${DOCKERHUB_USERNAME}" ] && [ -n "${DOCKERHUB_PASSWORD}" ] ; then
 
             echo "Logging-in on Docker Hub..."
-            echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin
+            echo "${DOCKERHUB_PASSWORD}" | docker login -u "${DOCKERHUB_USERNAME}" --password-stdin "${DOCKER_REGISTRY}"
             if [ ! $? ] ; then
                 echo "Docker Hub login failed"
                 return 1

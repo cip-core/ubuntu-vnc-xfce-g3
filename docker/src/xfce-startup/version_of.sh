@@ -113,6 +113,14 @@ case "$1" in
         ### source example: 0.8.0
         echo $(cat "${NO_VNC_HOME}"/utils/websockify/CHANGES.txt 2>/dev/null | grep -Po -m1 '^[0-9.]+')
         ;;
+    winehq )
+        ### source example: wine-7.0
+        echo $(wine --version 2>/dev/null | grep -Po -m1 '(?<=wine-)[0-9.]+')
+        ;;
+    winetricks )
+        ### source example: echo $(winetricks --version 2>/dev/null | grep -Po -m1 '[0-9a-zA-Z.-]+')
+        echo $(winetricks --version 2>/dev/null | grep -Po -m1 '^[0-9a-zA-Z.-]+')
+        ;;   
     xfce4-screenshooter | screenshooter | screenshot )
         ### source example: xfce4-screenshooter 1.8.2
         echo $(xfce4-screenshooter --version 2>/dev/null | grep -Po -m1 '[0-9.]+$')

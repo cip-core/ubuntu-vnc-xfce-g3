@@ -25,10 +25,12 @@ main() {
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --build-arg BASEIMAGE="${BASEIMAGE}" \
             --build-arg BASETAG="${BASETAG}" \
+            --build-arg BASECODENAME="${BASECODENAME}" \
             \
             ${FEATURES_BUILD_SLIM:+--build-arg ARG_APT_NO_RECOMMENDS=1} \
             ${FEATURES_SCREENSHOOTING:+--build-arg ARG_FEATURES_SCREENSHOOTING=1} \
             ${FEATURES_THUMBNAILING:+--build-arg ARG_FEATURES_THUMBNAILING=1} \
+            ${FEATURES_WINEHQ:+--build-arg ARG_FEATURES_WINEHQ=1} \
             ${FEATURES_USER_GROUP_OVERRIDE:+--build-arg ARG_FEATURES_USER_GROUP_OVERRIDE=1} \
             \
             ${FEATURES_NOVNC:+--build-arg ARG_MERGE_STAGE_VNC_BASE="stage_novnc"} \
@@ -91,7 +93,7 @@ main() {
 
     ### save the current short version sticker in any case
     ### this allows to delete the blocking file manually and continue building
-    ### metadata label value 'any.accetto.version-sticker' is filled from this file
+    ### metadata label value 'any.${_owner}.version-sticker' is filled from this file
     echo -n "${VERSION_STICKER_PREFIX}${version_sticker}${VERSION_STICKER_SUFFIX}" > "${_build_context}/${_scrap_version_sticker_current}"
 
     ### building prohibitdd by environment variable

@@ -29,14 +29,17 @@ main() {
             --build-arg BUILDKIT_INLINE_CACHE=1 \
             --build-arg BASEIMAGE="${BASEIMAGE}" \
             --build-arg BASETAG="${BASETAG}" \
+            --build-arg BASECODENAME="${BASECODENAME}" \
             --build-arg ARG_CREATED="${now}" \
             --build-arg ARG_DOCKER_TAG=${DOCKER_TAG} \
+            --build-arg ARG_OWNER=${_owner} \
             --build-arg ARG_VERSION_STICKER="${version_sticker}" \
             --build-arg ARG_VCS_REF="$(git rev-parse --short HEAD)" \
             \
             ${FEATURES_BUILD_SLIM:+--build-arg ARG_APT_NO_RECOMMENDS=1} \
             ${FEATURES_SCREENSHOOTING:+--build-arg ARG_FEATURES_SCREENSHOOTING=1} \
             ${FEATURES_THUMBNAILING:+--build-arg ARG_FEATURES_THUMBNAILING=1} \
+            ${FEATURES_WINEHQ:+--build-arg ARG_FEATURES_WINEHQ=1} \
             ${FEATURES_USER_GROUP_OVERRIDE:+--build-arg ARG_FEATURES_USER_GROUP_OVERRIDE=1} \
             \
             ${FEATURES_NOVNC:+--build-arg ARG_MERGE_STAGE_VNC_BASE="stage_novnc"} \
