@@ -16,7 +16,7 @@ ARG ARG_FINAL_STAGE_BASE=merge_stage_browser
 FROM ${BASEIMAGE}:${BASETAG} as stage_cache
 
 RUN rm -f /etc/apt/apt.conf.d/docker-clean; echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
-RUN apt-get update
+#RUN apt-get update
 
 
 ####################
@@ -30,6 +30,7 @@ SHELL ["/bin/bash", "-c"]
 RUN \
     --mount=type=cache,target=/var/cache/apt,from=stage_cache,source=/var/cache/apt \
     --mount=type=cache,target=/var/lib/apt,from=stage_cache,source=/var/lib/apt \
+    apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y \
         jq \
         nano \
@@ -38,7 +39,8 @@ RUN \
         tini \
         curl \
         less \
-        wget && \
+        wget \
+        remmina && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y
 
 
